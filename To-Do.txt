@@ -1,0 +1,16 @@
+To-Do List: 
+
+-- Fix lawyer_info function to show "getting info for lawyer name"  
+-- Change Elder-Law to everything
+-- Change from every city to only the top cities
+-- OR change city to input from user and only search in that city
+-- Check input from user against list of 8030 cities
+-- Get a list of all the different types of things for lawyers (DUI, Marriage, Internet, etc.)
+
+https://attorneys.superlawyers.com > Browse by practice area
+
+What state are you in? 
+What city are you in? 
+(If city is not in list of 8030), ask > What major city are you closest to? 
+(There might be duplicates of cities, so verify city with state)
+What practice do you need a lawyer for? 
