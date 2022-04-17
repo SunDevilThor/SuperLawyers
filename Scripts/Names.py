@@ -1,24 +1,13 @@
-# Lawyer Names
-# Test City: https://attorneys.superlawyers.com/elder-law/california/los-angeles/
-
+from re import I
 import requests
 from bs4 import BeautifulSoup
 
 lawyer_urls = []
-next_page_urls = []
+lawyer_urls
 
-
-def get_lawyer_urls(url): 
-    #url = 'https://attorneys.superlawyers.com/elder-law/california/los-angeles/'
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15'}
-
-    response = requests.get(url, headers=headers)
-
-    soup = BeautifulSoup(response.text, 'lxml')
-
-    # with open('Lawyer_Names-OFFLINE.html', 'w') as file: 
-    #     file.write(str(soup))
-    #     print('File saved for offline use.')
+def get_names(url): 
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'lxml')
 
     try: 
         lawyer_names_description = soup.find_all(id='poap_results')    ### WORKING ### 
@@ -83,27 +72,11 @@ def get_lawyer_urls(url):
     except Exception as error:
         pass
 
-    print('---Going to next page---')
-
-    pagination = soup.find_all('div', class_='pagination')
-
-    for item in pagination:
-        next_page = item.find('a',  attrs={'title': 'Go to Next Page'})
-        if next_page:
-            next_url = next_page['href']
-    
-    if next_page:
-        next_page_urls.append(next_url)
-
-    else: 
-        print('No more pages.')
 
 
 
-if __name__ == '__main__':             
-    get_lawyer_urls('https://attorneys.superlawyers.com/personal-injury-general/illinois/palatine/')
-    for item in next_page_urls:
-        get_lawyer_urls(item)
-    print('Amount of lawyers:', len(lawyer_urls))
-    print(next_page_urls)
-    print(lawyer_urls)
+
+if __name__ == '__main__':
+    get_names('https://attorneys.superlawyers.com/personal-injury-general/illinois/palatine/page15/')
+    print('Amount of lawyers:')
+    print(len(lawyer_urls))

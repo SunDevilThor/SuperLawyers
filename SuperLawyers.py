@@ -1,9 +1,11 @@
 # Attorneys - SuperLawyers 
 
+from bs4 import BeautifulSoup
+import datetime
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
 import sys
+import time
 
 
 state_names = []
@@ -18,6 +20,7 @@ lawyer_urls = []
 next_page_urls = []
 attorneys_list = []
 
+now = datetime.now()
 
 def get_state_names(): 
     """Gets the name of each state in the USA"""
@@ -94,41 +97,65 @@ def get_lawyer_urls(main_url):
     response = session.get(main_url, headers=headers)
     soup = BeautifulSoup(response.text, 'lxml')
 
-    try:
-        lawyer_names_description = soup.find('div', id= 'poap_results')
+    try: 
+        lawyer_names_description = soup.find_all(id='poap_results')  
 
-        for link in lawyer_names_description:
-            person_name = link.find('h2', class_= 'indigo_text').text.strip()
-            person_link = link.find('a', class_= 'directory_profile')['href']
-            if person_link not in lawyer_urls:
-                print('Adding URL link for', person_name)
-                lawyer_urls.append(person_link)
+        for section in lawyer_names_description:
+            individual = section.find_all('div', class_="poap serp-container lawyer")
+            for person in individual: 
+                try: 
+                    person_name = person.find('h2', class_='indigo_text').text.strip()
+                    person_link = person.find('a', class_='directory_profile')['href']
 
-    except Exception as error: 
-        pass
+                    if person_link not in lawyer_urls:
+                        print('Adding URL link for', person_name)
+                        lawyer_urls.append(person_link)
 
-    try:    
-        lawyer_names_no_description = soup.find('div', id= 'eoap_results')
-
-        for link in lawyer_names_no_description:
-            person_name = link.find('h2', class_= 'indigo_text').text.strip()
-            person_link = link.find('a', class_= 'directory_profile')['href']
-            if person_link not in lawyer_urls:
-                print('Adding URL link for', person_name)
-                lawyer_urls.append(person_link)
+                except: 
+                    pass
+                    print('NOTHING HERE') 
 
     except Exception as error:
         pass
 
     try: 
-        lawyer_names_basic = soup.find('div', id= 'basic_results')
+        lawyer_names_no_description = soup.find_all(id='eoap_results')
 
-        for link in lawyer_names_basic:
-            person_name = link.find('h2', class_= 'indigo_text').text.strip()
-            person_link = link.find('a', class_= 'directory_profile')['href']
-            if person_link not in lawyer_urls:
-                print('Adding URL link for', person_name)
-                lawyer_urls.append(person_link)
+        for section in lawyer_names_no_description:
+            individual = section.find_all('div', class_="eoap serp-container lawyer")
+            for person in individual: 
+                try: 
+                    person_name = person.find('h2', class_='indigo_text').text.strip()
+                    person_link = person.find('a', class_='directory_profile')['href']
+
+                    if person_link not in lawyer_urls:
+                        print('Adding URL link for', person_name)
+                        lawyer_urls.append(person_link)
+
+                except: 
+                    pass
+                    print('NOTHING HERE')   
+            
+    except Exception as error:
+        pass
+
+    try: 
+        lawyer_names_basic = soup.find_all(id='basic_results')
+
+        for section in lawyer_names_basic:
+            individual = section.find_all('div', class_="basic serp-container lawyer")
+            for person in individual: 
+                try: 
+                    person_name = person.find('h2', class_='indigo_text').text.strip()
+                    person_link = person.find('a', class_='directory_profile')['href']
+
+                    if person_link not in lawyer_urls:
+                        print('Adding URL link for', person_name)
+                        lawyer_urls.append(person_link)
+
+                except: 
+                    pass
+                    print('NOTHING HERE')  
 
     except Exception as error:
         pass
@@ -236,6 +263,7 @@ if __name__ == '__main__':
         user_selection = input('\nWhat practice are you interested? (Press "q" to Quit).\n')
         if user_selection in practices_names:
             user_selection = user_selection.lower().replace(' ', '-').replace('&', 'and')
+            user_selection = user_selection.replace('---', '-')
             user_city = input('\nWhat city are you in?\n')
             if user_city in city_names: 
                 user_city = user_city.lower().replace(' ', '-')
@@ -279,7 +307,8 @@ if __name__ == '__main__':
             print('Exiting...')
             sys.exit()
                     
-
+# end = datetime.now()
+# print('Time completed in: ', now-end)
 
 
 # Fix While loop to loop over current question and not start over from beginning. 
