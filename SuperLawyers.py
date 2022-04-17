@@ -20,7 +20,7 @@ lawyer_urls = []
 next_page_urls = []
 attorneys_list = []
 
-now = datetime.now()
+# now = datetime.now()
 
 def get_state_names(): 
     """Gets the name of each state in the USA"""
